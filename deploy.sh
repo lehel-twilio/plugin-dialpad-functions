@@ -33,6 +33,6 @@ echo $UPDATEDUIATTRIBUTES >> updatedUiAttributes.json
 `node updateFlexConfiguration.js updatedUiAttributes $ACCOUNTSID $AUTHTOKEN`
 
 #Clean up files
-#trap `rm uiAttributes.json` EXIT
-#trap `rm updatedUiAttributes.json` EXIT
-#trap `rm logs.txt` EXIT
+trap `rm uiAttributes.json` EXIT
+trap `rm updatedUiAttributes.json` EXIT
+trap `rm logs.txt` EXIT
