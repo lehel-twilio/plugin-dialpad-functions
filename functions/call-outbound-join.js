@@ -1,4 +1,4 @@
-/* create a Twilio Function from this file 
+/* create a Twilio Function from this file
 
 name: Flex Dialpad Call Outbound Join
 path /call-outbound-join
@@ -93,9 +93,9 @@ exports.handler = function(context, event, callback) {
           }).then(([to, from]) => {
             console.log(`initiate outbound call to: ${attributes.to}`);
 
-            if (to.length == 10) {
+            /*if (to.length == 10) {
                 to = `1${to}`;
-            }
+            }*/
 
             return addParticipantToConference(client, context, event.ConferenceSid, taskSid, to, from);
 

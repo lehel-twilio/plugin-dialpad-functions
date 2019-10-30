@@ -11,6 +11,8 @@ const axios = require('axios');
 
 exports.handler = async function(context, event, callback) {
 
+  Object.keys(event).forEach( thisEvent => console.log(`${thisEvent}: ${event[thisEvent]}`));
+
   const workspace = context.TWILIO_WORKSPACE_SID;
   const workflowSid = context.TWILIO_WORKFLOW_SID;
 
@@ -28,7 +30,9 @@ exports.handler = async function(context, event, callback) {
     return callback(null, response);
   }
 
-  console.log('successfully authed', authed.data)
+  console.log('successfully authed ', authed.data);
+  console.log('To ', event.To);
+  console.log('From ', event.From);
 
   client
   .taskrouter.workspaces(workspace)
@@ -39,7 +43,7 @@ exports.handler = async function(context, event, callback) {
         {
           to: event.To,
           direction: 'outbound',
-          name: 'Your Company Name Here',
+          name: event.To,
           from: event.From,
           url: context.RUNTIME_DOMAIN,
           targetWorker: event.Worker,
