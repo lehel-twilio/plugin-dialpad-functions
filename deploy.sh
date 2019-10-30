@@ -13,7 +13,7 @@ trap `rm updatedUiAttributes.json` EXIT
 trap `rm logs.txt` EXIT
 
 #deploy functions and parse the output, to grab the runtime domain
-DOMAIN=`twilio serverless:deploy -l debug | awk '/domain[[:space:]]/ { print $2 }'`
+DOMAIN=`twilio serverless:deploy --override-existing-project -l debug | awk '/domain[[:space:]]/ { print $2 }'`
 echo $DOMAIN
 
 #get Flex configuration using Twilio cli
@@ -33,6 +33,6 @@ echo $UPDATEDUIATTRIBUTES >> updatedUiAttributes.json
 `node updateFlexConfiguration.js updatedUiAttributes $ACCOUNTSID $AUTHTOKEN`
 
 #Clean up files
-trap `rm uiAttributes.json` EXIT
-trap `rm updatedUiAttributes.json` EXIT
-trap `rm logs.txt` EXIT
+#trap `rm uiAttributes.json` EXIT
+#trap `rm updatedUiAttributes.json` EXIT
+#trap `rm logs.txt` EXIT
