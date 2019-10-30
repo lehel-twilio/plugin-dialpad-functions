@@ -4,6 +4,7 @@ Pre-requisites:
 1. Install Twilio CLI. Please refer to the Twilio CLI documentation here https://www.twilio.com/docs/labs/serverless-toolkit. Please make sure that the correct profiles is activated within the CLI.
 2. Install jq. Please refer to the documentation here https://stedolan.github.io/jq/
 
+Installation instructions
 1. Add the following to your .env file:
 ACCOUNT_SID=AC...
 AUTH_TOKEN=...
