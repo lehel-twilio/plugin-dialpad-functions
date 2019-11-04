@@ -2,37 +2,16 @@
 
 #Ptompt user for Account Sid and Token
 echo Please enter your Account Sid
-read ACCOUNTSID
+read ACCOUNT_SID
 
 echo Please enter your Auth Token
-read AUTHTOKEN
-
-#Clean up old files, if applicable
-trap `rm uiAttributes.json` EXIT
-trap `rm updatedUiAttributes.json` EXIT
-trap `rm logs.txt` EXIT
+read AUTH_TOKEN
 
 #deploy functions and parse the output, to grab the runtime domain
 DOMAIN=`twilio serverless:deploy --override-existing-project -l debug | awk '/domain[[:space:]]/ { print $2 }'`
 echo $DOMAIN
 
-#get Flex configuration using Twilio cli
-UIATTRIBUTES=`twilio api:flex:v1:configuration:fetch --properties=uiAttributes`
-
-#strip leading "Ui Attributes"
-STRIPPEDUIATTRIBUTES=$(echo $UIATTRIBUTES | cut -c15-)
-#save json to disk
-echo $STRIPPEDUIATTRIBUTES >> uiAttributes.json
-
-#use jq to append dialpadDomain to the configuation
-UPDATEDUIATTRIBUTES=`jq --arg domain $DOMAIN '.dialpadDomain=$domain' uiAttributes.json`
-#write updated attributes to disk
-echo $UPDATEDUIATTRIBUTES >> updatedUiAttributes.json
-
-#call node function which will call the REST API to update the configuration
-`node updateFlexConfiguration.js updatedUiAttributes $ACCOUNTSID $AUTHTOKEN`
-
-#Clean up files
-trap `rm uiAttributes.json` EXIT
-trap `rm updatedUiAttributes.json` EXIT
-trap `rm logs.txt` EXIT
+#Update Flex configuation with new Functions v2 domain
+curl -s 'https://flex-api.twilio.com/v1/Configuration' -u $ACCOUNT_SID:$AUTH_TOKEN |
+jq --arg domain $DOMAIN --arg account_sid $ACCOUNT_SID -r -c '{ ui_attributes: .ui_attributes } * { "account_sid": $account_sid, "ui_attributes": { "dialpadDomain": $domain }}' |
+curl -s -X POST 'https://flex-api.twilio.com/v1/Configuration' -u $ACCOUNT_SID:$AUTH_TOKEN -H 'Content-Type: application/json' -d @-
