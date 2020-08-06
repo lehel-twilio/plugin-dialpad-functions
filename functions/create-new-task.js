@@ -7,9 +7,9 @@ Remove the checkmark from Check for valid Twilio signature
 
 */
 
-const axios = require('axios');
+const TokenValidator = require('twilio-flex-token-validator').functionValidator;
 
-exports.handler = async function(context, event, callback) {
+exports.handler = TokenValidator(function(context, event, callback) {
 
   Object.keys(event).forEach( thisEvent => console.log(`${thisEvent}: ${event[thisEvent]}`));
 
@@ -62,17 +62,5 @@ exports.handler = async function(context, event, callback) {
     console.log(error);
     callback(error);
   });
-};
+});
 
-async function validateToken(token, accountSid, authToken) {
-  try {
-    return await axios.post(
-      `https://iam.twilio.com/v1/Accounts/${accountSid}/Tokens/validate`,
-      { token: token },
-      { auth: { username: accountSid, password: authToken } }
-    )
-  } catch (e) {
-    console.error('failed to validate token', e.response.data);
-    throw e;
-  }
-}
